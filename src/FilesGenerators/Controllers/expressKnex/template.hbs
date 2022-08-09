@@ -1,65 +1,69 @@
-const {{entity.Name}}Model = require("../models/{{entity.Name}}Model");
+const { page } = require('../utils/page')
+const { ErrorResponse, CreatedResponse, NoContentResponse, SuccessResponse, Paginate } = require('../responses/index.responses')
+const {{entity.name}}Service = require('../services/{{entity.importName}}.service')
 
-module.exports = {
-  {{#if methods.create}}
-  async create(request, response) {
+class {{entity.name}}Controller {
+  {{#if methods.read}}
+  async paginate({ tenant, query }, res) {
     try {
-      const {{entity.name}} = request.body;
+      const requestedPage = page(query)
+      const {{entity.nameFirstLetterLowerCase}}Service = new {{entity.Name}}Service(tenant)
+      const { count, {{entity.paginateObjectName}} } = await {{entity.nameFirstLetterLowerCase}}Service.paginate(requestedPage)
 
-      const result = await {{entity.Name}}Model.create({{entity.name}});
-      return response.status(200).json(result);
-    } catch (err) {
-      console.log("{{entity.Name}} creation failed: " + err);
-      return response.status(500).json({
-        notification: "Internal server error while trying to create {{entity.Name}}",
-      });
+      return Paginate(res, count, requestedPage, {{entity.paginateObjectName}})
+    } catch (error) {
+      return ErrorResponse(error, res)
     }
-  },
+  }
   {{/if}}
   {{#if methods.read}}
-  async getById(request, response) {
+  async findOne({ tenant, params: { codigo } }, res) {
     try {
-      const { {{entity.name}}_id } = request.params;
-      const result = await {{entity.Name}}.getById({{entity.name}}_id);
+      const {{entity.nameFirstLetterLowerCase}}Service = new {{entity.Name}}Service(tenant)
+      const {{entity.nameFirstLetterLowerCase}} = await {{entity.nameFirstLetterLowerCase}}Service.findOne(codigo)
 
-      return response.status(200).json(result);
-    } catch (err) {
-      console.log("{{entity.Name}} getById failed: " + err);
-      return response.status(500).json({
-        notification: "Internal server error while trying to get {{entity.Name}}",
-      });
+      return SuccessResponse(res, {{entity.nameFirstLetterLowerCase}})
+    } catch (error) {
+      return ErrorResponse(error, res)
     }
-  },
+  }
+  {{/if}}
+  {{#if methods.create}}
+  async create({ tenant, body }, res) {
+    try {
+      const {{entity.nameFirstLetterLowerCase}}Service = new {{entity.Name}}Service(tenant)
+      const {{entity.nameFirstLetterLowerCase}} = await {{entity.nameFirstLetterLowerCase}}Service.create(body)
+
+      return CreatedResponse(res, {{entity.nameFirstLetterLowerCase}})
+    } catch (error) {
+      return ErrorResponse(error, res)
+    }
+  }
   {{/if}}
   {{#if methods.update}}
-  async update(request, response) {
+  async update({ tenant, body, params: { codigo } }, res) {
     try {
-      const { {{entity.name}}_id } = request.params;
-      const {{entity.name}} = request.body;
-      const result = await {{entity.Name}}Model.updateById({{entity.name}}_id, {{entity.name}});
+      const {{entity.nameFirstLetterLowerCase}}Service = new {{entity.Name}}Service(tenant)
+      const {{entity.nameFirstLetterLowerCase}} = await {{entity.nameFirstLetterLowerCase}}Service.update(codigo, body)
 
-      return response.status(200).json(result);
-    } catch (err) {
-      console.log("{{entity.Name}} update failed: " + err);
-      return response.status(500).json({
-        notification: "Internal server error while trying to update {{entity.Name}}",
-      });
+      return SuccessResponse(res, {{entity.nameFirstLetterLowerCase}})
+    } catch (error) {
+      return ErrorResponse(error, res)
     }
-  },
+  }
   {{/if}}
   {{#if methods.delete}}
-  async delete(request, response) {
+  async destroy({ tenant, params: { codigo } }, res) {
     try {
-      const { {{entity.name}}_id } = request.params;
+      const {{entity.nameFirstLetterLowerCase}}Service = new {{entity.Name}}Service(tenant)
+      await {{entity.nameFirstLetterLowerCase}}Service.destroy(codigo)
 
-      const result = await {{entity.Name}}Model.deleteById({{entity.name}}_id);
-      return response.status(200).json(result);
-    } catch (err) {
-      console.log("{{entity.Name}} delete failed: " + err);
-      return response.status(500).json({
-        notification: "Internal server error while trying to delete {{entity.Name}}",
-      });
+      return NoContentResponse(res)
+    } catch (error) {
+      return ErrorResponse(error, res)
     }
   },
   {{/if}}
 };
+
+module.exports = {{entity.name}}Controller

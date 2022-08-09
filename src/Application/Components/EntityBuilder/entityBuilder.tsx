@@ -18,6 +18,10 @@ const INITIAL_FIELDS: Fields = {
 const INITIAL_ENTITY: Entity = {
   name: "",
   tableName: "",
+  importName: "",
+  paginateObjectName: "",
+  nameFirstLetterLowerCase: "",
+  paginateResponseObjectName: "",
   fields: { ...INITIAL_FIELDS },
 };
 
@@ -52,6 +56,7 @@ const EntityBuilder: React.FC<Props> = (props) => {
     const { value, name } = event.target;
     const newEntity = { ...entity };
     newEntity[name] = value;
+    newEntity.nameFirstLetterLowerCase = newEntity.name[0].toLowerCase() + newEntity.name.slice(1)
     setEntity(newEntity);
   }
 
@@ -81,7 +86,7 @@ const EntityBuilder: React.FC<Props> = (props) => {
             name="name"
             onChange={handleUpdateEntity}
           />
-          <Form.Text className="text-muted">Ex: product</Form.Text>
+          <Form.Text className="text-muted">Ex: UnidadeMedida</Form.Text>
         </div>
         <div className="mr-2">
           <Form.Label>Table name:</Form.Label>
@@ -93,7 +98,31 @@ const EntityBuilder: React.FC<Props> = (props) => {
             name="tableName"
             onChange={handleUpdateEntity}
           />
-          <Form.Text className="text-muted">Ex: products</Form.Text>
+          <Form.Text className="text-muted">Ex: unidades_medidas</Form.Text>
+        </div>
+        <div className="mr-2">
+          <Form.Label>Import name:</Form.Label>
+          <Form.Control
+            type="text"
+            style={{minWidth: "110px"}}
+            placeholder="Enter import name"
+            value={entity.importName}
+            name="importName"
+            onChange={handleUpdateEntity}
+          />
+          <Form.Text className="text-muted">Ex: unidade-medida</Form.Text>
+        </div>
+        <div className="mr-2">
+          <Form.Label>Paginate object:</Form.Label>
+          <Form.Control
+            type="text"
+            style={{minWidth: "110px"}}
+            placeholder="Enter response object name"
+            value={entity.paginateObjectName}
+            name="paginateObjectName"
+            onChange={handleUpdateEntity}
+          />
+          <Form.Text className="text-muted">Ex: unidadesMedida</Form.Text>
         </div>
       </div>
       <Form.Label className="mt-2">New Field:</Form.Label>

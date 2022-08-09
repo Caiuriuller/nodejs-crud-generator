@@ -28,7 +28,10 @@ export interface Methods {
 
 export interface Entity {
   name: string;
+  nameFirstLetterLowerCase: string;
+  paginateObjectName: string;
   tableName: string;
+  importName: string;
   fields: { [key: string]: Field };
   [key: string]: any;
 }
