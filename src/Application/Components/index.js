@@ -5,4 +5,11 @@ import FieldItem from "./FieldItem/fieldItem";
 import FileShow from "./FileShow/FileShow";
 import GithubButton from "./GithubButton/GithubButton";
 
-export { ExportBox, FunctionBox, EntityBuilder, FieldItem, FileShow, GithubButton };
+export {
+  ExportBox,
+  FunctionBox,
+  EntityBuilder,
+  FieldItem,
+  FileShow,
+  GithubButton,
+};

@@ -20,8 +20,10 @@ const INITIAL_ENTITY: Entity = {
   tableName: "",
   importName: "",
   paginateObjectName: "",
+  pluralName: "",
   nameFirstLetterLowerCase: "",
   paginateResponseObjectName: "",
+  nameUpperCase: "",
   fields: { ...INITIAL_FIELDS },
 };
 
@@ -57,6 +59,11 @@ const EntityBuilder: React.FC<Props> = (props) => {
     const newEntity = { ...entity };
     newEntity[name] = value;
     newEntity.nameFirstLetterLowerCase = newEntity.name[0].toLowerCase() + newEntity.name.slice(1)
+    newEntity.importName = newEntity.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+    newEntity.tableName = newEntity.pluralName.replace(/[A-Z]/g, val => "_" + val.toLowerCase()).replace(/^_/,"")
+    newEntity.paginateObjectName = newEntity?.pluralName && newEntity.pluralName[0].toLowerCase() + newEntity.pluralName.slice(1)
+    newEntity.nameUpperCase = newEntity?.name.toUpperCase()
+    console.log(newEntity.nameUpperCase)
     setEntity(newEntity);
   }
 
@@ -89,40 +96,16 @@ const EntityBuilder: React.FC<Props> = (props) => {
           <Form.Text className="text-muted">Ex: UnidadeMedida</Form.Text>
         </div>
         <div className="mr-2">
-          <Form.Label>Table name:</Form.Label>
+          <Form.Label>Entity Plural Name:</Form.Label>
           <Form.Control
             type="text"
             style={{minWidth: "110px"}}
-            placeholder="Enter table Name"
-            value={entity.tableName}
-            name="tableName"
+            placeholder="Enter entity Plural Name"
+            value={entity.pluralName}
+            name="pluralName"
             onChange={handleUpdateEntity}
           />
-          <Form.Text className="text-muted">Ex: unidades_medidas</Form.Text>
-        </div>
-        <div className="mr-2">
-          <Form.Label>Import name:</Form.Label>
-          <Form.Control
-            type="text"
-            style={{minWidth: "110px"}}
-            placeholder="Enter import name"
-            value={entity.importName}
-            name="importName"
-            onChange={handleUpdateEntity}
-          />
-          <Form.Text className="text-muted">Ex: unidade-medida</Form.Text>
-        </div>
-        <div className="mr-2">
-          <Form.Label>Paginate object:</Form.Label>
-          <Form.Control
-            type="text"
-            style={{minWidth: "110px"}}
-            placeholder="Enter response object name"
-            value={entity.paginateObjectName}
-            name="paginateObjectName"
-            onChange={handleUpdateEntity}
-          />
-          <Form.Text className="text-muted">Ex: unidadesMedida</Form.Text>
+          <Form.Text className="text-muted">Ex: UnidadesMedida</Form.Text>
         </div>
       </div>
       <Form.Label className="mt-2">New Field:</Form.Label>

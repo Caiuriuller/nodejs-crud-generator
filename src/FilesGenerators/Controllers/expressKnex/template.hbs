@@ -64,6 +64,50 @@ class {{entity.name}}Controller {
     }
   },
   {{/if}}
+  {{#if methods.contato}}
+  async paginateContatos({ tenant, query, params: { codigo } }, res) {
+    try {
+      const requestedPage = page(query)
+      const contatoService = new ContatoService(tenant)
+
+      const { count, contatos } = await contatoService.paginate(requestedPage, codigo, constants.PESSOA.CONTATO.{{entity.nameUpperCase}})
+
+      return Paginate(res, count, requestedPage, contatos)
+    } catch (error) {
+      return ErrorResponse(error, res)
+    }
+  }
+  async createContato({ tenant, body, params: { codigo } }, res) {
+    try {
+      const contatoService = new ContatoService(tenant)
+      const contato = await contatoService.create(codigo, constants.PESSOA.CONTATO.{{entity.nameUpperCase}}, body)
+
+      return CreatedResponse(res, contato)
+    } catch (error) {
+      return ErrorResponse(error, res)
+    }
+  }
+  async updateContato({ tenant, body, params: { codigo, email } }, res) {
+    try {
+      const contatoService = new ContatoService(tenant)
+      const contato = await contatoService.update(codigo, constants.PESSOA.CONTATO.{{entity.nameUpperCase}}, email, body)
+
+      return SuccessResponse(res, contato)
+    } catch (error) {
+      return ErrorResponse(error, res)
+    }
+  }
+  async destroyContato({ tenant, params: { codigo, email } }, res) {
+    try {
+      const contatoService = new ContatoService(tenant)
+      await contatoService.destroy(codigo, constants.PESSOA.CONTATO.{{entity.nameUpperCase}}, email)
+
+      return NoContentResponse(res)
+    } catch (error) {
+      return ErrorResponse(error, res)
+    }
+  }
+  {{/if}}
 };
 
 module.exports = {{entity.name}}Controller

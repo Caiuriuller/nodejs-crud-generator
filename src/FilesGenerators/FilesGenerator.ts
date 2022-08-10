@@ -2,7 +2,7 @@ import { ExpressknexControllerGen } from "./Controllers";
 import { knexModelGen } from "./Models";
 import { ExpressRoutesGen } from "./Routes";
 import { CelebrateValidatorGen } from "./Validators";
-
+import { ExpressKnexServiceGen } from "./Services";
 import { Entity, Settings, TextFile, File } from "../Application/types";
 import { FileGenerator } from "./types";
 import KnexMigrationGen from "./Migrations/knex/knex";
@@ -24,6 +24,10 @@ export class FilesGenerator {
           case "controller":
             FileGen = FilesGenerator.selectController(file);
             break;
+
+          case "service":
+              FileGen = FilesGenerator.selectService(file);
+              break;
 
           case "migration":
             FileGen = FilesGenerator.selectMigration(file);
@@ -50,6 +54,13 @@ export class FilesGenerator {
     });
 
     return response;
+  }
+
+  static selectService(file: File): FileGenerator | undefined {
+    switch (file.type) {
+      case "Knex + Express":
+        return new ExpressKnexServiceGen();
+    }
   }
 
   static selectController(file: File): FileGenerator | undefined {

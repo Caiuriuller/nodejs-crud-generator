@@ -28,6 +28,8 @@ export interface Methods {
 
 export interface Entity {
   name: string;
+  nameUpperCase: string;
+  pluralName: string;
   nameFirstLetterLowerCase: string;
   paginateObjectName: string;
   tableName: string;

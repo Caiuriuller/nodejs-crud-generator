@@ -1,0 +1,84 @@
+const { {{entity.name}}ResponseDto, {{entity.name}}CreateDto, {{entity.name}}UpdateDto } = require('../dto/{{entity.importName}}.dto')
+const ConflictError = require('../errors/ConflictError.error')
+const NotFoundError = require('../errors/NotFoundError.error')
+const {{entity.name}}Repository = require('../repositories/{{entity.importName}}.repository')
+const UsuarioRepository = require('../repositories/usuario.repository')
+const constants = require('../config/constants')
+
+class {{entity.name}}Service {
+
+  constructor(tenant) {
+    this.{{entity.nameFirstLetterLowerCase}}Repository = new {{entity.name}}Repository(tenant)
+    this.usuarioRepository = new UsuarioRepository(tenant)
+  }
+
+  {{#if methods.read}}
+  async paginate(page) {
+    const { count, rows } = await this.{{entity.nameFirstLetterLowerCase}}Repository.paginate(page)
+
+    return {
+      count,
+      {{entity.paginateObjectName}}: rows.map({{entity.nameFirstLetterLowerCase}} => this.buildResponse({{entity.nameFirstLetterLowerCase}}))
+    }
+  }
+  {{/if}}
+  {{#if methods.read}}
+  async findOne(codigo) {
+    const {{entity.nameFirstLetterLowerCase}} = await this.{{entity.nameFirstLetterLowerCase}}Repository.findOne({ codigo })
+
+    if (!{{entity.nameFirstLetterLowerCase}}) {
+      throw new NotFoundError(`{{entity.name}} com o código '${codigo}' não foi encontrada.`)
+    }
+
+    return this.buildResponse({{entity.nameFirstLetterLowerCase}})
+  }
+  {{/if}}
+  {{#if methods.create}}
+  async create(body) {
+    const {{entity.nameFirstLetterLowerCase}} = await this.{{entity.nameFirstLetterLowerCase}}Repository.findOne({ codigo: body.codigo })
+
+    if ({{entity.nameFirstLetterLowerCase}}) {
+      throw new ConflictError(`{{entity.name}} com o código '${body.codigo}' já existe.`)
+    }
+
+    const { id: idUsuarioIntegracao } = await this.usuarioRepository.findUsuarioIntegracao()
+
+    const {{entity.nameFirstLetterLowerCase}}CreateDto = new {{entity.name}}CreateDto(
+      idUsuarioIntegracao
+    )
+
+    const created{{entity.name}} = await this.{{entity.nameFirstLetterLowerCase}}Repository.create({{entity.nameFirstLetterLowerCase}}CreateDto)
+
+    return this.buildResponse(created{{entity.name}})
+  }
+  {{/if}}
+  {{#if methods.update}}
+  async update(codigo, body) {
+    const {{entity.nameFirstLetterLowerCase}} = await this.{{entity.nameFirstLetterLowerCase}}Repository.findOne({ codigo })
+
+    if (!{{entity.nameFirstLetterLowerCase}}) {
+      throw new NotFoundError(`{{entity.name}} com o código '${codigo}' não foi encontrada.`)
+    }
+
+    const {{entity.nameFirstLetterLowerCase}}UpdateDto = new {{entity.name}}UpdateDto(
+    )
+
+    await this.{{entity.nameFirstLetterLowerCase}}Repository.update({ codigo }, {{entity.nameFirstLetterLowerCase}}UpdateDto)
+
+    return body
+  }
+  {{/if}}
+  {{#if methods.delete}}
+  async destroy(codigo) {
+    const {{entity.nameFirstLetterLowerCase}} = await this.{{entity.nameFirstLetterLowerCase}}Repository.findOne({ codigo, status: constants.STATUS.ATIVO })
+
+    if (!{{entity.nameFirstLetterLowerCase}}) {
+      throw new NotFoundError(`{{entity.name}} com o código '${codigo}' não foi encontrada.`)
+    }
+
+    await this.{{entity.nameFirstLetterLowerCase}}Repository.update({ codigo }, { status: constants.STATUS.INATIVO })
+  }
+  {{/if}}
+};
+
+module.exports = {{entity.name}}Service

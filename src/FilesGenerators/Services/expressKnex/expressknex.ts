@@ -3,7 +3,7 @@ import Handlebars from "handlebars";
 import { Entity, Settings, TextFile } from "../../../Application/types";
 import { FileGenerator } from "../../types";
 
-class ExpressKnexControllerGen extends FileGenerator {
+class ExpressKnexServiceGen extends FileGenerator {
   protected static getHbsTemplate(): HandlebarsTemplateDelegate<any> {
     const txt = raw("./template.hbs");
     const template = Handlebars.compile(txt);
@@ -14,16 +14,16 @@ class ExpressKnexControllerGen extends FileGenerator {
     entity: Entity | undefined,
     settings: Settings | undefined
   ): TextFile | undefined {
-    const template = ExpressKnexControllerGen.getHbsTemplate();
+    const template = ExpressKnexServiceGen.getHbsTemplate();
 
     if (entity !== undefined) {
       const newEntity: Entity = { ...entity };
       newEntity.Name = FileGenerator.capitalizeFirstLetter(newEntity.name);
 
       const text = template({ ...settings, entity: newEntity });
-      return { [`${newEntity?.importName}.controller.js`]: text };
+      return { [`${newEntity?.importName}.service.js`]: text };
     }
   }
 }
 
-export default ExpressKnexControllerGen;
+export default ExpressKnexServiceGen;

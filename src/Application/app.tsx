@@ -13,7 +13,7 @@ import { FilesGenerator } from "../FilesGenerators";
 
 const INITIAL_SETTINGS: Settings = {
   files: {},
-  methods: { create: true, read: true, update: true, delete: true },
+  methods: { create: true, read: true, update: true, delete: true, contato: true},
 };
 
 interface TextFile {
@@ -56,18 +56,12 @@ const App: React.FC = () => {
 
   return (
     <div className="p-3 m-auto" style={{ maxWidth: "1024px" }}>
-      <div className="d-flex flex-row-reverse">
-        <GithubButton
-          href="https://github.com/ArthurMbraga/nodejs-crud-generator"
-          className="ml-auto"
-        />
-      </div>
       <Title>NodeJs CRUD generator</Title>
       <Row className="d-flex justify-content-start mt-4">
         <Col sm className="flex-grow-0">
           Methods:
           <FunctionBox
-            options={["Create", "Read", "Update", "Delete"]}
+            options={["Create", "Read", "Update", "Delete", "Contato"]}
             onChange={onMethodsChanged}
           />
         </Col>
@@ -80,23 +74,13 @@ const App: React.FC = () => {
               onChange={onFilesChanged}
             />
             <ExportBox
-              title="Validator"
-              options={["Celebrate"]}
-              onChange={onFilesChanged}
-            />
-            <ExportBox
-              title="Model"
-              options={["Knex"]}
-              onChange={onFilesChanged}
-            />
-            <ExportBox
               title="Controller"
               options={["Knex + Express"]}
               onChange={onFilesChanged}
             />
             <ExportBox
-              title="Migration"
-              options={["Knex"]}
+              title="Service"
+              options={["Knex + Express"]}
               onChange={onFilesChanged}
             />
           </div>

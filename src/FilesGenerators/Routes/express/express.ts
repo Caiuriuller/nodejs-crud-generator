@@ -21,7 +21,7 @@ class ExpressRoutesGen extends FileGenerator {
       newEntity.Name = FileGenerator.capitalizeFirstLetter(newEntity.name);
 
       const text = template({ ...settings, entity: newEntity });
-      return { [`${newEntity?.Name}Routes.js`]: text };
+      return { [`${newEntity?.importName}.routes.js`]: text };
     }
   }
 }

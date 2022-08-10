@@ -1,28 +1,25 @@
-const {{entity.Name}}Validator = require("./validators/{{entity.Name}}Validator");
-const {{entity.Name}}Controller = require("./controllers/{{entity.Name}}Controller");
+const express = require('express')
+const router = express.Router()
 
-{{#if methods.create}}
-routes.post('/{{entity.name}}',
-  {{entity.Name}}Validator.create,
-  {{entity.Name}}Controller.create);
+const {{entity.Name}}Controller = require('../controllers/{{entity.importName}}.controller')
+const { validate } = require('../validators/validator')
+const {{entity.nameFirstLetterLowerCase}}Validator = require('../validators/{{entity.importName}}.validator')
+const {{entity.nameFirstLetterLowerCase}}Controller = new {{entity.Name}}Controller()
+
+{{#if methods.read}}
+router.get('', {{entity.nameFirstLetterLowerCase}}Controller.paginate);
 {{/if}}
 {{#if methods.read}}
-
-routes.get('/{{entity.name}}/:{{entity.name}}_id',
-  {{entity.Name}}Validator.getById,
-  {{entity.Name}}Controller.getById);
+router.get('/:codigo', {{entity.nameFirstLetterLowerCase}}Controller.findOne);
+{{/if}}
+{{#if methods.create}}
+router.post('', validate({{entity.nameFirstLetterLowerCase}}Validator.create), {{entity.nameFirstLetterLowerCase}}Controller.create)
 {{/if}}
 {{#if methods.update}}
-
-routes.put('/{{entity.name}}/:{{entity.name}}_id',
-  {{entity.Name}}Validator.update,
-  {{entity.Name}}Controller.update);
+router.patch('/:codigo', validate({{entity.nameFirstLetterLowerCase}}Validator.update), {{entity.nameFirstLetterLowerCase}}Controller.update)
 {{/if}}
 {{#if methods.delete}}
-
-routes.delete('/{{entity.name}}/:{{entity.name}}_id',
-  {{entity.Name}}Validator.delete,
-  {{entity.Name}}Controller.delete);
+router.delete('/:codigo', {{entity.nameFirstLetterLowerCase}}Controller.destroy)
 {{/if}}
 
-module.exports = routes;
+module.exports = router
